@@ -1,0 +1,22 @@
+#app-menu {
+	> .ui.menu {
+		background-color: white;
+
+		> .active {
+			cursor: pointer;
+		}
+	}
+
+	&.test {
+		> .pusher > .ui.menu, > .ui.menu {
+			background-color: #00ffff;
+
+			.item {
+				&.active {
+					border-color: #ff00ff;
+				}
+				color: #ffff00 !important;
+			}
+		}
+	}
+}
