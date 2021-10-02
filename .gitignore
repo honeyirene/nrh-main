@@ -4,6 +4,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# build files
+build
+
 # Runtime data
 *.pid
 *.seed
@@ -63,6 +66,3 @@ common/deploy/
 common/temp/
 common/autoinstallers/*/.npmrc
 **/.rush/temp/
-
-# Heft
-.heft

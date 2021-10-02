@@ -40,7 +40,7 @@ export const SampleComponent: React.FC<Props> = props => {
 			setResp(resp);
 		}
 		catch (e) {
-			setError(e);
+			setError(e as Error);
 		}
 		finally {
 			setIsLoading(false);
