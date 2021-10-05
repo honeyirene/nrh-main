@@ -1,5 +1,4 @@
 import yup = require('yup');
-import { TypedSchema } from 'yup/lib/util/types';
 
 export type HttpMethod = 'get' | 'post' | 'delete' | 'put';
 
@@ -8,17 +7,41 @@ export enum DatabaseConnectionMode {
 	ATOMIC_REQUEST = 'atomic_request',
 }
 
-export interface Protocol<Req, Resp, Schema extends TypedSchema> {
-	method: HttpMethod;
-	resource: string;
-	page: string;
-	schema: yup.InferType<Schema> extends Req ? Schema : 'error: wrong schema';
+export interface BaseProtocol<
+	Req,
+	Resp,
+	Method extends HttpMethod,
+	Resource extends `/${string}`,
+	Page extends `/${string}`> {
 
-	tmp_req?: Req;
-	tmp_resp?: Resp;
-
+	method: Method;
+	// url = resource + page
+	resource: Resource;
+	page: Page;
+	schema: yup.BaseSchema<any, any, Req>;
 	db: DatabaseConnectionMode;
+
+	// 타입을 명시하지 않으면 상속 받을때 잃어버리고 unknown 으로 추론됨.
+	readonly __inputType: Req;
+	readonly __outputType: Resp;
+}
+export namespace Protocol {
+	export function api<
+		Req,
+		Resp,
+		Method extends HttpMethod,
+		Resource extends `/${string}`,
+		Page extends `/${string}`
+	>(
+		skel: BaseProtocol<Req, Resp, Method, Resource, Page>,
+	): BaseProtocol<Req, Resp, Method, Resource, Page> {
+		return {
+			...skel,
+			__inputType: {} as any,
+			__outputType: {} as any,
+		};
+	}
 }
 
-export type ProtocolReqType<T> = T extends Protocol<infer Req, infer Resp, any> ? Req : never;
-export type ProtocolRespType<T> = T extends Protocol<infer Req, infer Resp, any> ? Resp : never;
+export type ProtocolReqType<T> = T extends BaseProtocol<infer Req, any, any, any, any> ? Req : never;
+export type ProtocolRespType<T> = T extends BaseProtocol<any, infer Resp, any, any, any> ? Resp : never;

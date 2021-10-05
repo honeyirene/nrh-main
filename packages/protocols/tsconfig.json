@@ -1,14 +1,14 @@
 {
-  "extends": "../../tsconfig",
-  "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "./build",
-  },
+  "extends": "./tsconfig.build.json",
   "include": [
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "build"
-  ]
+    "dist"
+  ],
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  }
 }

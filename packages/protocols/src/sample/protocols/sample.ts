@@ -19,13 +19,15 @@ interface SampleResp {
 	result: string;
 }
 
-const sample: Protocol<SampleReq, SampleResp, typeof sampleSchema> = {
+const sample = Protocol.api({
+	__inputType: {} as SampleReq,
+	__outputType: {} as SampleResp,
 	method: 'post',
 	resource,
 	page: '/',
 	schema: sampleSchema,
 	db: DatabaseConnectionMode.NO_DB,
-};
+});
 
 export const sampleProtocol = {
 	sample,

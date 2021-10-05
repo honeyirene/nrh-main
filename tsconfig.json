@@ -1,17 +1,16 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     "lib": [
-      "dom",
+      "es2019",
+      "WebWorker",
     ],
     "moduleResolution": "node",
     "module": "commonjs",
+    "jsx": "react",
     "sourceMap": true,
     "declaration": true,
-    "target": "es6",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "outDir": "./build",
+    "declarationMap": true,
+    "target": "es2018",
     "strict": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": false,
@@ -21,7 +20,8 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "importHelpers": true
   },
   "exclude": [
     "./node_modules",
