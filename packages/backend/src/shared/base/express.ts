@@ -1,4 +1,5 @@
 import yup = require('yup');
+import delay from 'delay';
 import express from 'express';
 import { BaseProtocol, DatabaseConnectionMode, HttpMethod } from '@nrh/protocols';
 import { Api } from './api';
@@ -43,7 +44,8 @@ const handleExpress = <Req extends object, Resp>(params: {
 	db?: DatabaseConnectionMode;
 }): ExpressHandler => {
 	return async (req: express.Request, res: express.Response) => {
-		const body = await validateSchema(req, params.schema);
+		// fixme
+		const body = params.schema.validateSync(req);
 
 		const handleRequest = async () => {
 			const resp: Resp = await params.fn(body);

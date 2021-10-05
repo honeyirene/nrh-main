@@ -1,9 +1,6 @@
 import { DatabaseConnectionMode, Protocol } from "../../common";
 import yup = require('yup');
 
-const resource = '/api/sample';
-export const resource_sample = resource;
-
 interface SampleReq {
 	a: string;
 	b: number;
@@ -19,17 +16,19 @@ interface SampleResp {
 	result: string;
 }
 
-const sample = Protocol.api({
-	__inputType: {} as SampleReq,
-	__outputType: {} as SampleResp,
-	method: 'post',
-	resource,
-	page: '/',
-	schema: sampleSchema,
-	db: DatabaseConnectionMode.NO_DB,
-});
-
 export namespace sampleProtocol {
+	export const resource = '/api/sample';
+
+	const sample = Protocol.api({
+		__inputType: {} as SampleReq,
+		__outputType: {} as SampleResp,
+		method: 'post',
+		resource,
+		page: '/',
+		schema: sampleSchema,
+		db: DatabaseConnectionMode.NO_DB,
+	});
+
 	export type DataSheet = typeof dataSheet;
 	export const dataSheet = {
 		sample,

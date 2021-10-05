@@ -6,6 +6,8 @@ import { SampleApi } from "../apis";
 const router = express.Router();
 
 const api = new SampleApi();
-registerProtocol(router, sampleProtocol.dataSheet, api);
+const sample = registerProtocol(router, sampleProtocol, api);
 
-export const sampleRouter = router;
+export const sampleRoutes = [
+	sample,
+];

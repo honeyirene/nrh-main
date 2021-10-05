@@ -1,4 +1,1 @@
-export {
-	resource_sample,
-	sampleProtocol,
-} from './protocols';
+export { sampleProtocol } from './protocols';
