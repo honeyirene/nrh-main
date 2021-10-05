@@ -1,7 +1,7 @@
-import { Protocol } from "@nrh/protocols";
+import { BaseProtocol } from "@nrh/protocols";
 
 // TODO: Req 감싸서 뭔가 덕지덕지 붙여야 함.
-type HandlerFunction<T> = T extends Protocol<infer Req, infer Resp, any>
+type HandlerFunction<T> = T extends BaseProtocol<infer Req, infer Resp, any, any, any>
 	? (body: Req) => Promise<Resp>
 	: never;
 

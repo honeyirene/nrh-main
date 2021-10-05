@@ -29,6 +29,9 @@ const sample = Protocol.api({
 	db: DatabaseConnectionMode.NO_DB,
 });
 
-export const sampleProtocol = {
-	sample,
+export namespace sampleProtocol {
+	export type DataSheet = typeof dataSheet;
+	export const dataSheet = {
+		sample,
+	};
 };

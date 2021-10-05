@@ -3,7 +3,7 @@ import cors from 'cors';
 import { resource_sample } from '@nrh/protocols';
 import { sampleRouter } from './sample';
 
-const app = express();
+const app: express.Application = express();
 
 const router = express.Router();
 router.use(express.json({ limit: '5MB' }));

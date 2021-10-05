@@ -1,80 +1,65 @@
 import yup = require('yup');
 import express from 'express';
-import { Protocol } from '@nrh/protocols';
-import { TypedSchema } from 'yup/lib/util/types';
+import { BaseProtocol, DatabaseConnectionMode, HttpMethod } from '@nrh/protocols';
 import { Api } from './api';
-import { SchemaObjectDescription } from 'yup/lib/schema';
 
 type ExpressHandler = (req: express.Request, res: express.Response) => Promise<void>;
 
-type SyncApiHandler<Req extends object, Resp> = (
+type ApiHandler<Req extends object, Resp> = (
 	body: Req,
 ) => Promise<Resp>;
 
-export function registerProtocol<T>(
+export function registerProtocol<TDataSheet>(
 	router: express.Router,
-	protocol: T,
-	api: Api<T>,
+	protocol: { resource: string, dataSheet: TDataSheet },
+	api: Api<TDataSheet>,
 ) {
-	for (const key of Object.keys(protocol)) {
-		const fn = api[key as keyof typeof api];
-		const p = protocol[key as keyof typeof api];
-		registerSyncApi(router, p as any, fn);
+	const { resource, dataSheet } = protocol;
+	for (const x of Object.keys(dataSheet)) {
+		const key = x as keyof typeof api;
+		const fn = api[key].bind(api);
+		registerController(router, dataSheet[key] as any, fn);
 	}
+	return { resource, router };
 }
 
-function registerSyncApi<Req extends object, Resp, Schema extends TypedSchema>(
+function registerController<Req extends object, Resp>(
 	router: express.Router,
-	protocol: Protocol<Req, Resp, Schema>,
-	fn: SyncApiHandler<Req, Resp>,
+	spec: BaseProtocol<Req, Resp, HttpMethod, any, any>,
+	fn: (req: Req) => Promise<Resp>,
 ) {
-	const { method, page } = protocol;
-	router[method](page, handleSyncApi<Req, Resp, Schema>({
+	router[spec.method](spec.page, handleExpress({
+		...spec,
 		fn,
-		schema: protocol.schema as Schema,
 	}));
 }
 
-const handleSyncApi = <Req extends object, Resp, Schema extends TypedSchema>(params: {
-	fn: SyncApiHandler<Req, Resp>,
-	schema: Schema,
+const handleExpress = <Req extends object, Resp>(params: {
+	fn: ApiHandler<Req, Resp>,
+	schema: yup.BaseSchema<any, any, Req>,
+	userlock?: boolean;
+	timeout?: number;
+	maintenance?: boolean;
+	db?: DatabaseConnectionMode;
 }): ExpressHandler => {
-	const {
-		fn,
-	} = params;
-
-	const schema = params.schema as any as yup.BaseSchema<Req>;
-
 	return async (req: express.Request, res: express.Response) => {
-		const body = await validateSchema(req, schema);
-		const data = await onHandleSyncApi({ fn, body });
-		writeJson(res, data);
-	};
-};
+		const body = await validateSchema(req, params.schema);
 
-const onHandleSyncApi = async <Req extends object, Resp>(params: {
-	fn: SyncApiHandler<Req, Resp>,
-	body: Req,
-}) => {
-	const { fn, body } = params;
-	const resp: Resp = await fn(body);
-	return resp;
-};
+		const handleRequest = async () => {
+			const resp: Resp = await params.fn(body);
+			return resp;
+		}
 
-export async function validateSchema<T extends object>(
-	req: express.Request,
-	schema: yup.BaseSchema<T>,
-): Promise<T> {
-	const raw = {
-		...req.params,
-		...req.query,
-		...req.body,
-	};
+		const DEFAULT_TIMEOUT = 6000;
+		const timeout = params.timeout ?? DEFAULT_TIMEOUT;
+		const handleTimeout = async () => {
+			await delay(timeout);
+			throw new Error(`time out: ${timeout}`);
+		};
 
-	const body = await schema.validate(raw);
-	return body;
-}
+		const data = await Promise.race([handleRequest(), handleTimeout()]);
 
-function writeJson<T>(res: express.Response, resp: T) {
-	res.type('application/json').send(JSON.stringify(resp, null, 2));
+		const text = JSON.stringify(data, null, 2);
+		res.type('json').send(text);
+	}
 }

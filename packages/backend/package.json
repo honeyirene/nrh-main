@@ -4,8 +4,8 @@
   "description": "백엔드 서버",
   "main": "build/src/index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "start": "cross-env NODE_ENV=development webpack --watch"
+    "build": "tsc",
+    "start": "node dist/src/local.js",
   },
   "author": "",
   "license": "ISC",
