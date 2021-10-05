@@ -20,4 +20,5 @@ npm i -g @microsoft/rush@5.54.0 pnpm@6.10.3
 5. rush check \
 	패키지 버전 다른게 있는지 체크
 6. rush add --package \<package> \
-	하위 패키지 폴더에서 원하는 패키지 추가
+	하위 패키지 폴더에서 원하는 패키지 추가 \
+	--dev -> 개발용 라이브러리
