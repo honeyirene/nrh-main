@@ -5,7 +5,7 @@
   "main": "build/src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/local.js",
+    "start": "node dist/src/local.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +16,9 @@
     "typescript": "^4.2.3",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "^3.0.0",
+    "yup": "0.32.9",
+    "delay": "~5.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.10",
