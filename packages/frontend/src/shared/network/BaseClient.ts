@@ -51,7 +51,7 @@ export class BaseClient {
 				throw e;
 			}
 
-			const data: Resp = json.data;
+			const data: Resp = json;
 			return data;
 		};
 		return fn;
