@@ -36,8 +36,9 @@ export const SampleComponent: React.FC<Props> = props => {
 	const request = async () => {
 		try {
 			setIsLoading(true);
-			const resp = await client.sample({ a, b });
-			setResp(resp);
+			const result = await client.sample({ a, b });
+			console.log(result)
+			setResp(result);
 		}
 		catch (e) {
 			setError(e as Error);
@@ -50,13 +51,6 @@ export const SampleComponent: React.FC<Props> = props => {
 	const onClick = async () => {
 		await request();
 	};
-
-	if (isLoading) {
-		return <h1>loading...</h1>;
-	}
-	if (error !== null) {
-		return <h1> {JSON.stringify(error)} </h1>
-	}
 
 	return (
 		<>
@@ -74,9 +68,20 @@ export const SampleComponent: React.FC<Props> = props => {
 				send
 			</button>
 
+			{isLoading
+				? <h3> loading... </h3>
+				: null
+			}
+
+
 			{resp !== null
-				? JSON.stringify(resp)
-				: undefined
+				? <h3> {JSON.stringify(resp)} </h3>
+				: null
+			}
+
+			{error !== null
+				? <h3> {JSON.stringify(error)} </h3>
+				: null
 			}
 		</>
 	);
