@@ -1,16 +1,14 @@
 import qs from 'qs';
 import {
-	Protocol,
 	HttpMethod,
-	ProtocolReqType,
-	ProtocolRespType,
+	BaseProtocol,
 } from '@nrh/protocols';
-import { TypedSchema } from 'yup/lib/util/types';
 
-type ClientFunction<T extends Protocol<any, any, any>>
-	= (body: ProtocolReqType<T>) => Promise<ProtocolRespType<T>>;
+type ClientFunction<T> = T extends BaseProtocol<infer Req, infer Resp, any, any, any>
+	? (body: Req) => Promise<Resp>
+	: never;
 
-export type Client<T extends { [k: string]: Protocol<any, any, any> }> = {
+export type Client<T> = {
 	[P in keyof T]: ClientFunction<T[P]>;
 };
 
@@ -23,10 +21,10 @@ export class BaseClient {
 		private readonly opts: Options
 	) { }
 
-	public handle<Req extends { [key: string]: any }, Resp, Schema extends TypedSchema>(
-		api: Protocol<Req, Resp, Schema>,
-	) {
-		const fn: ClientFunction<Protocol<Req, Resp, Schema>> = async (req) => {
+	public handle<Req extends { [key: string]: any }, Resp>(
+		api: BaseProtocol<Req, Resp, any, any, any>,
+	): (body: Req) => Promise<Resp> {
+		const fn: ClientFunction<BaseProtocol<Req, Resp, any, any, any>> = async (req) => {
 			const {
 				method,
 			} = api;

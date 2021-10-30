@@ -5,6 +5,6 @@ import {
 } from "./BaseClient";
 
 export class SampleClient extends BaseClient
-	implements Client<typeof sampleProtocol> {
-	public sample = this.handle(sampleProtocol.sample);
+	implements Client<sampleProtocol.DataSheet> {
+	public sample = this.handle(sampleProtocol.dataSheet.sample);
 }
