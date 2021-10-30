@@ -1,6 +1,6 @@
 import { DatabaseConnectionMode, Protocol } from "../../common";
 import yup = require('yup');
-import { EmptyModel } from "src/shared/models";
+import { EmptyModel } from "../../shared/models";
 
 interface SampleReq {
 	a: string;
@@ -42,6 +42,7 @@ export namespace sampleProtocol {
 
 	export type DataSheet = typeof dataSheet;
 	export const dataSheet = {
+		empty,
 		sample,
 	};
 };

@@ -3,6 +3,7 @@ import delay from 'delay';
 import express from 'express';
 import { BaseProtocol, DatabaseConnectionMode, HttpMethod } from '@nrh/protocols';
 import { Api } from './api';
+import { validateSchema } from './validateInput';
 
 type ExpressHandler = (req: express.Request, res: express.Response) => Promise<void>;
 
@@ -44,8 +45,7 @@ const handleExpress = <Req extends object, Resp>(params: {
 	db?: DatabaseConnectionMode;
 }): ExpressHandler => {
 	return async (req: express.Request, res: express.Response) => {
-		// fixme
-		const body = params.schema.validateSync(req);
+		const body = await validateSchema(req, params.schema);
 
 		const handleRequest = async () => {
 			const resp: Resp = await params.fn(body);
